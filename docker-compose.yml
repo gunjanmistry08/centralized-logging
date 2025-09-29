@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+
+  centeral-logging:
+    build:
+      context: ./centeral-logging
+    container_name: centeral-logging
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: "mongodb://mongodb:27017/"
+    depends_on:
+      - mongodb
+
+  server:
+    build:
+      context: ./server
+    container_name: server
+    ports:
+      - "9000:9000"
+    environment:
+      centeral_logging_url: "http://centeral-logging:8080/ingest"
+    depends_on:
+      - centeral-logging
+
+  client:
+    build:
+      context: ./client
+    container_name: client
+    ports:
+      - "9001:9001"
+    environment:
+      server_url: "server:9000"
+    depends_on:
+      - server
