@@ -94,3 +94,28 @@ Environment variables and configuration options can be set in the Docker Compose
 
 1. Using another collection to keep track of user who are blacklisted and feed it to redis for faster lookup
 2. Using kafka/rabbitmq to  pass logs to centeral logging server from log-controller
+
+## Execution
+
+1. Client will write to RabbitMQ
+2. Server will consume from RabbitMQ
+
+### RabbitMQ using docker
+
+```bash
+    docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 -e RABBITMQ_DEFAULT_USER=username -e RABBITMQ_DEFAULT_PASS=password rabbitmq:3-management
+```
+
+### Exchange
+
+- Run one server as
+
+```bash
+go run server.go "<134>" "<132>"
+```
+
+- And other as
+
+```bash
+go run server.go "<131>"
+```
